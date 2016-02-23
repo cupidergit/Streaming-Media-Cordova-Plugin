@@ -59,5 +59,8 @@
 		<source-file src="src/android/com/hutchind/cordova/plugins/streamingmedia/SimpleVideoStream.java" target-dir="src/com/hutchind/cordova/plugins/streamingmedia" />
 		<source-file src="src/android/com/hutchind/cordova/plugins/streamingmedia/StreamingMedia.java" target-dir="src/com/hutchind/cordova/plugins/streamingmedia" />
 		<source-file src="src/android/com/hutchind/cordova/plugins/streamingmedia/ImageLoadTask.java" target-dir="src/com/hutchind/cordova/plugins/streamingmedia" />
+        	<source-file src="src/android/res/drawable/back.png" target-dir="res/drawable" />
+		<source-file src="src/android/res/layout/video.xml" target-dir="res/layout" />
+		<source-file src="src/android/res/values/dimens.xml" target-dir="res/values" />
 	</platform>
 </plugin>

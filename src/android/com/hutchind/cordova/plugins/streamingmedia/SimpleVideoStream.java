@@ -19,6 +19,12 @@ import android.widget.MediaController;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.VideoView;
+import android.view.LayoutInflater;
+import android.view.ViewGroup;
+import android.widget.TextView;
+import android.widget.ImageView;
+
+import com.iu.cupider.R;
 
 public class SimpleVideoStream extends Activity implements
 	MediaPlayer.OnCompletionListener, MediaPlayer.OnPreparedListener,
@@ -30,17 +36,23 @@ public class SimpleVideoStream extends Activity implements
 	private ProgressBar mProgressBar = null;
 	private String mVideoUrl;
 	private Boolean mShouldAutoClose = true;
+    
+    private String videoName;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		this.requestWindowFeature(Window.FEATURE_NO_TITLE);
-		this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+		//this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
 		Bundle b = getIntent().getExtras();
 		mVideoUrl = b.getString("mediaUrl");
 		mShouldAutoClose = b.getBoolean("shouldAutoClose");
 		mShouldAutoClose = mShouldAutoClose == null ? true : mShouldAutoClose;
+
+        if(b.containsKey("videoName")){
+                videoName = b.getString("videoName");
+            }
 
 		RelativeLayout relLayout = new RelativeLayout(this);
 		relLayout.setBackgroundColor(Color.BLACK);
@@ -49,6 +61,28 @@ public class SimpleVideoStream extends Activity implements
 		mVideoView = new VideoView(this);
 		mVideoView.setLayoutParams(relLayoutParam);
 		relLayout.addView(mVideoView);
+
+
+        View topRelativeLayout = LayoutInflater.from(getApplicationContext()).inflate(R.layout.video,null);
+
+        ImageView exitVideo = (ImageView) topRelativeLayout.findViewById(R.id.exitVideo);
+    
+        TextView videoTv = (TextView) topRelativeLayout.findViewById(R.id.videoName);
+        videoTv.setText(videoName);
+
+        exitVideo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
+
+    
+        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,(int)getResources().getDimension(R.dimen.video_top_rel_height));
+        params.addRule(RelativeLayout.ALIGN_PARENT_TOP, RelativeLayout.TRUE);
+        topRelativeLayout.setLayoutParams(params);
+        relLayout.addView(topRelativeLayout);
+        
 
 		// Create progress throbber
 		mProgressBar = new ProgressBar(this);
@@ -65,6 +99,21 @@ public class SimpleVideoStream extends Activity implements
 
 		play();
 	}
+
+    @Override  
+    public void onConfigurationChanged(Configuration newConfig) {  
+        super.onConfigurationChanged(newConfig);  
+    
+        // Checks the orientation of the screen  
+        if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {  
+            View topRelativeLayout = this.findViewById(R.id.videoHeader);
+            topRelativeLayout.setVisibility(4);
+			this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN); 
+        } else if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT){  
+            View topRelativeLayout = this.findViewById(R.id.videoHeader);
+            topRelativeLayout.setVisibility(0); 
+        }  
+    } 
 
 	private void play() {
 		mProgressBar.setVisibility(View.VISIBLE);
@@ -174,11 +223,11 @@ public class SimpleVideoStream extends Activity implements
 		wrapItUp(RESULT_OK, null);
 	}
 
-	@Override
-	public void onConfigurationChanged(Configuration newConfig) {
-		// The screen size changed or the orientation changed... don't restart the activity
-		super.onConfigurationChanged(newConfig);
-	}
+	// @Override
+	// public void onConfigurationChanged(Configuration newConfig) {
+	// 	// The screen size changed or the orientation changed... don't restart the activity
+	// 	super.onConfigurationChanged(newConfig);
+	// }
 
 	@Override
 	public boolean onTouchEvent(MotionEvent event) {
