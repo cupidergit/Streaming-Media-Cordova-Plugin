@@ -18,19 +18,19 @@
 	BOOL shouldAutoClose;
 	UIColor *backgroundColor;
 	UIImageView *imageView;
-    BOOL *initFullscreen;
+    BOOL initFullscreen;
 }
 
 NSString * const TYPE_VIDEO = @"VIDEO";
 NSString * const TYPE_AUDIO = @"AUDIO";
 NSString * const DEFAULT_IMAGE_SCALE = @"center";
 
-- (CDVPlugin*) initWithWebView:(UIWebView*)theWebView {
-	NSLog(@"-------------------------------------------------");
-	NSLog(@"INITWITHWEBVIEW");
-	self = (StreamingMedia*)[super initWithWebView:theWebView];
-	return self;
-}
+//- (CDVPlugin*) initWithWebView:(UIWebView*)theWebView {
+//	NSLog(@"-------------------------------------------------");
+//	NSLog(@"INITWITHWEBVIEW");
+//	self = (StreamingMedia*)[super initWithWebView:theWebView];
+//	return self;
+//}
 
 -(void)parseOptions:(NSDictionary *)options type:(NSString *) type {
 	// Common options
@@ -198,12 +198,15 @@ NSString * const DEFAULT_IMAGE_SCALE = @"center";
 
 	moviePlayer.controlStyle = MPMovieControlStyleDefault;
 
+	[moviePlayer prepareToPlay];
+
 	moviePlayer.shouldAutoplay = YES;
 	if (imageView != nil) {
 		[moviePlayer.backgroundView setAutoresizesSubviews:YES];
 		[moviePlayer.backgroundView addSubview:imageView];
 	}
 	moviePlayer.backgroundView.backgroundColor = backgroundColor;
+    [moviePlayer.view setFrame:self.viewController.view.bounds];
 	[self.viewController.view addSubview:moviePlayer.view];
 
 	// Note: animating does a fade to black, which may not match background color
